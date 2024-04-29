@@ -31,6 +31,11 @@ app.post("/register", async (req, res)=> {
     }
 })
 
+app.post('/login', (req, res)=>{
+    const {username, password} = req.body
+    res.json({username, password})
+})
+
 app.listen(port , ()=>{
     console.log(`app listening on port ${port}`)
 })
