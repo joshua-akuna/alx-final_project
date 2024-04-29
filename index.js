@@ -31,9 +31,11 @@ app.post("/register", async (req, res)=> {
     }
 })
 
-app.post('/login', (req, res)=>{
+app.post('/login', async (req, res)=>{
     const {username, password} = req.body
-    res.json({username, password})
+    const userInfo = await User.findOne({username})
+    const isValidUser = bcrypt.compareSync(password, userInfo.password)
+    res.json(isValidUser)
 })
 
 app.listen(port , ()=>{
