@@ -2,6 +2,8 @@
 const express = require("express")
 const cors = require('cors')
 const bcrypt = require("bcryptjs")
+const mongoose = require('mongoose')
+const User = require('./models/User')
 
 // creates the express server
 const app = express()
@@ -14,16 +16,18 @@ const salt = bcrypt.genSaltSync(10)
 app.use(cors())
 app.use(express.json())
 
-app.get("/api/v1", (req, res)=>{
-    res.json("Hello World")
-})
+mongoose.connect('mongodb+srv://akunajoshua:6FtA0VORRARQxQkV@jblog.tkrnbrj.mongodb.net/?retryWrites=true&w=majority&appName=jblog')
 
-app.post("/register", (req, res)=> {
+
+app.post("/register", async (req, res)=> {
     try{
-        const {email, password} = req.body
-        res.json({email, password: bcrypt.hashSync(password, salt)})
+        const {username, password} = req.body
+        const hash = bcrypt.hashSync(password, salt)
+        const userInfo = await User.create({username, password:hash})
+        res.json(userInfo)
     } catch (e){
-        console.log(e)
+        /*console.log(e)*/
+        res.status(400).json("invalid username")
     }
 })
 
